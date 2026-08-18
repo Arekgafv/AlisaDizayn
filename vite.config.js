@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 
 export default defineConfig({
-	base: "/AlisaDizayn.github.io/",
+	base: "/AlisaDizayn/",
 });
+// base: "/AlisaDizayn.github.io/",
