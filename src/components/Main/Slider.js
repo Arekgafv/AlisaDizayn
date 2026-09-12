@@ -76,6 +76,11 @@ export function initSlider() {
 	});
 
 	// Touch события
+	// Slider.js
+
+	// ... (начало функции без изменений)
+
+	// Touch события
 	track.addEventListener(
 		"touchstart",
 		(e) => {
@@ -92,26 +97,34 @@ export function initSlider() {
 		"touchmove",
 		(e) => {
 			if (!isDragging) return;
+
 			const currentX = e.touches[0].clientX;
 			const diffX = currentX - startX;
+
+			// Если свайп явно горизонтальный — предотвращаем системный жест "Back"
+			if (Math.abs(diffX) > 5) {
+				if (e.cancelable) e.preventDefault();
+			}
+
 			const dragPercent = (diffX / track.parentElement.offsetWidth) * 100;
 			track.style.transform = `translateX(${currentIndex * -100 + dragPercent}%)`;
 		},
-		{ passive: true },
+		{ passive: false }, // ВАЖНО: false позволяет вызывать preventDefault()
 	);
 
 	track.addEventListener("touchend", (e) => {
 		if (!isDragging) return;
 		isDragging = false;
-		const movedBy =
-			((e.changedTouches[0].clientX - startX) / track.parentElement.offsetWidth) *
-			100;
+
+		const endX = e.changedTouches[0].clientX;
+		const movedBy = ((endX - startX) / track.parentElement.offsetWidth) * 100;
 		const elapsedTime = Date.now() - startTime;
 
 		if ((elapsedTime < 250 && Math.abs(movedBy) > 5) || Math.abs(movedBy) > 15) {
 			if (movedBy < 0) currentIndex++;
 			else currentIndex--;
 		}
+
 		isTransitioning = true;
 		updateSlider();
 	});
