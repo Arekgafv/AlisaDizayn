@@ -1,7 +1,7 @@
 import { ICON_ADDED } from "../../assets/icons.js";
 
 // Полный URL к файлу контакта (Telegram WebApp требует абсолютный URI для openLink)
-const VCF_PATH = new URL("https://arekgafv.github.io/AlisaDizayn/", window.location.origin).href;
+        const VCF_URL = new URL("https://AlisaDizayn.github.io/AlisaDizayn/public/AlisaDizayn.vcf", window.location.origin).href;
 
 // Функция скачивания с поддержкой Telegram SDK
 function downloadVcf() {
@@ -9,13 +9,13 @@ function downloadVcf() {
 
     // 1. Если запуск идет внутри Telegram Mini App
     if (tg && typeof tg.openLink === "function") {
-        tg.openLink(VCF_PATH);
+        tg.openLink(VCF_URL);
         return;
     }
 
     // 2. Фолбэк для обычных мобильных/ПК браузеров
     const a = document.createElement("a");
-    a.href = VCF_PATH;
+    a.href = VCF_URL;
     a.download = "AlisaDizayn.vcf";
     document.body.appendChild(a);
     a.click();
