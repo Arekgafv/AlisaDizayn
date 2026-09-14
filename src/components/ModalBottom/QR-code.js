@@ -1,7 +1,7 @@
 import { ICON_ADDED } from "../../assets/icons.js";
 
 // Полный URL к файлу контакта (Telegram WebApp требует абсолютный URI для openLink)
-const VCF_PATH = new URL("https://AlisaDizayn.github.io/AlisaDizayn/public/contacts/AlisaDizayn.vcf", window.location.origin).href;
+const VCF_PATH = new URL("https://arekgafv.github.io/AlisaDizayn/", window.location.origin).href;
 
 // Функция скачивания с поддержкой Telegram SDK
 function downloadVcf() {
