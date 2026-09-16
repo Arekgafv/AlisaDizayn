@@ -62,32 +62,40 @@
 	z-index: 10;
 }
 
-/* Базовый стиль кнопки (если его еще нет или для уточнения) */
 .save-contact-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    /* Твои текущие стили (background, padding и т.д.) */
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 90%;
+	max-width: 420px;
+	padding: clamp(12px, 1.8vh, 18px) clamp(20px, 6vw, 36px);
+	border: none;
+	border-radius: 100px;
+	background: var(--brand-bg-gradient);
+	cursor: pointer;
+	transition:
+		transform 0.15s ease,
+		box-shadow 0.3s;
+	box-shadow: 0 8px 24px rgba(0, 102, 255, 0.2);
+	outline: none;
 }
 
 .save-contact-btn:active {
 	transform: scale(0.97);
 }
 
-/* Состояние "Контакт сохранен" */
+/* Состояние после нажатия: меняем цвет фона на серый */
 .save-contact-btn--added {
-    background-color: #808080 !important; /* Серый цвет */
-    opacity: 0.7;
-    cursor: default;
-    filter: grayscale(1); /* Делает SVG иконку черно-белой */
+	background: var(--tg-theme-hint-color, #708499) !important;
+	box-shadow: none;
+	/* Оставляем кликабельной! */
+	pointer-events: auto;
 }
 
 .save-contact-btn__svg {
-    width: 100%;
-    height: auto;
-    display: block;
+	width: 100%;
+	height: auto;
+	max-height: clamp(35px, 6vh, 55px);
+	display: block;
+	min-width: 100px;
 }
-
-/* Если внутри иконки есть цветные пути, grayscale их приглушит */
