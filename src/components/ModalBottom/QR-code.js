@@ -1,34 +1,36 @@
 import { ICON_ADDED } from "../../assets/icons.js";
 
-// Полный URL к файлу контакта (Telegram WebApp требует абсолютный URI для openLink)
-const VCF_PATH = new URL(`${import.meta.env.BASE_URL}AlisaDizayn.vcf`, window.location.origin).href;
+/**
+ * Прямой путь к файлу в папке public. 
+ * При сборке Vite положит его в корень, поэтому './' — самый надежный вариант.
+ */
+const VCF_PATH = "./AlisaDizayn.vcf";
 
-// Функция скачивания с поддержкой Telegram SDK
-function downloadVcf() {
-    const tg = window.Telegram?.WebApp;
-
-    // 1. Если запуск идет внутри Telegram Mini App
-    if (tg && typeof tg.openLink === "function") {
-        tg.openLink(VCF_PATH);
-        return;
-    }
-
-    // 2. Фолбэк для обычных мобильных/ПК браузеров
-    const a = document.createElement("a");
-    a.href = VCF_PATH;
-    a.download = "AlisaDizayn.vcf";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+/**
+ * Функция принудительного скачивания файла через создание временной ссылки.
+ * Это самый надежный способ для iOS (WKWebView) и Android.
+ */
+function triggerDownload() {
+    const link = document.createElement("a");
+    link.href = VCF_PATH;
+    link.download = "AlisaDizayn.vcf"; // Принудительно задаем имя файла
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
 
-// Изменение стиля и иконки кнопки
+/**
+ * Визуальное подтверждение: меняем цвет кнопки и иконку
+ */
 function setBtnAdded(btn) {
     if (!btn) return;
     btn.classList.add("save-contact-btn--added");
     btn.innerHTML = ICON_ADDED;
 }
 
+/**
+ * Инициализация логики
+ */
 export function initContacts() {
     const saveContactBtn = document.getElementById("saveContactBtn");
     const qrModal = document.getElementById("qrModal");
@@ -37,30 +39,33 @@ export function initContacts() {
 
     if (!saveContactBtn) return;
 
+    // 1. Обработка клика по главной кнопке в футере
     saveContactBtn.addEventListener("click", () => {
         const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
         if (isMobile) {
-            // На смартфонах: запуск скачивания/открытия файла через Telegram SDK и сброс кнопки
-            downloadVcf();
+            // На мобильных: сразу скачиваем и красим кнопку
+            triggerDownload();
             setBtnAdded(saveContactBtn);
         } else {
-            // На ПК: открытие модального окна с QR-кодом
+            // На ПК: открываем модалку с QR
             qrModal?.classList.add("info-modal--active");
         }
     });
 
-    // Клик по самому QR-коду внутри модалки (для ПК)
+    // 2. Обработка клика по QR-коду (внутри модалки для ПК)
     qrWrap?.addEventListener("click", () => {
-        downloadVcf();
-        setBtnAdded(saveContactBtn);
+        triggerDownload();      // Скачиваем
+        setBtnAdded(saveContactBtn); // Красим кнопку в футере
+        qrModal?.classList.remove("info-modal--active"); // Закрываем модалку
+    });
+
+    // 3. Закрытие модалки по кнопке "крестик"
+    closeModalBtn?.addEventListener("click", () => {
         qrModal?.classList.remove("info-modal--active");
     });
 
-    closeModalBtn?.addEventListener("click", () =>
-        qrModal?.classList.remove("info-modal--active")
-    );
-
+    // 4. Закрытие модалки при клике на серый фон (вне контента)
     window.addEventListener("click", (e) => {
         if (e.target === qrModal) {
             qrModal.classList.remove("info-modal--active");
