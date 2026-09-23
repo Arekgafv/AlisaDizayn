@@ -31,6 +31,8 @@ function setBtnAdded(btn) {
 /**
  * Инициализация логики
  */
+// ... (весь верх кода оставляем без изменений)
+
 export function initContacts() {
     const saveContactBtn = document.getElementById("saveContactBtn");
     const qrModal = document.getElementById("qrModal");
@@ -39,26 +41,36 @@ export function initContacts() {
 
     if (!saveContactBtn) return;
 
-    // 1. Обработка клика по главной кнопке в футере
-    saveContactBtn.addEventListener("click", () => {
+    // 1. Обработка клика по главной кнопке
+    // Добавляем параметр (e), чтобы получить доступ к событию
+    saveContactBtn.addEventListener("click", (e) => {
+        
+        // ВАЖНО: Останавливаем стандартное поведение ссылки (авто-скачивание),
+        // чтобы JavaScript сам решил, скачивать файл сразу или открыть модалку.
+        e.preventDefault(); 
+
         const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
         if (isMobile) {
-            // На мобильных: сразу скачиваем и красим кнопку
+            // На мобильных: JS запускает скачивание и красит кнопку
             triggerDownload();
             setBtnAdded(saveContactBtn);
         } else {
-            // На ПК: открываем модалку с QR
+            // На ПК: JS только открывает модалку
             qrModal?.classList.add("info-modal--active");
         }
     });
 
     // 2. Обработка клика по QR-коду (внутри модалки для ПК)
     qrWrap?.addEventListener("click", () => {
-        triggerDownload();      // Скачиваем
-        setBtnAdded(saveContactBtn); // Красим кнопку в футере
-        qrModal?.classList.remove("info-modal--active"); // Закрываем модалку
+        triggerDownload();      
+        setBtnAdded(saveContactBtn); 
+        qrModal?.classList.remove("info-modal--active"); 
     });
+
+    // ... (остальной код без изменений)
+}
+
 
     // 3. Закрытие модалки по кнопке "крестик"
     closeModalBtn?.addEventListener("click", () => {
@@ -72,3 +84,4 @@ export function initContacts() {
         }
     });
 }
+
